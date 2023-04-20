@@ -2,8 +2,6 @@ package com.example.magnetometer
 
 import android.content.Context
 import android.hardware.Sensor
-import android.hardware.SensorEvent
-import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
 import android.util.Log
@@ -18,12 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.magnetometer.ui.theme.MagnetometerTheme
 
-private const val TAG = "MAIN"
+private val TAG = "MAIN"
 private lateinit var  sensorManager: SensorManager
-private lateinit var gameOrientationVector: Sensor
-
-/* To the right of the ':' below is the class that MainActivity inherits. After the comma we have SensorEventListener which is an Interface*/
-class MainActivity : ComponentActivity(), SensorEventListener {
+class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -45,14 +40,6 @@ class MainActivity : ComponentActivity(), SensorEventListener {
             Log.d(TAG, "Device Sensor:$it ")
         }
 
-        // Todo cleaned this up by placing it in it's own function
-        listSensors(sensorManager = sensorManager)
-        gameOrientationVector = sensorManager.getDefaultSensor(Sensor.TYPE_GAME_ROTATION_VECTOR)
-
-
-        //TODO This registration activates an Observer that is listening for state changes in the sensor data
-        sensorManager.registerListener(this, gameOrientationVector, SensorManager.SENSOR_DELAY_NORMAL)
-
         setContent {
             MagnetometerTheme {
                 // A surface container using the 'background' color from the theme
@@ -64,64 +51,6 @@ class MainActivity : ComponentActivity(), SensorEventListener {
                 }
             }
         }
-
-        override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
-            Log.d(TAG, "onAccuracyChanged: DO Something")
-        }
-        /* This observer function is listening for changes in value, once you register the listener above, it will
-        continually update
-        */
-        override fun onSensorChanged(event: SensorEvent?) {
-            if (event != null) {
-                /* TODO These if statements will make the device LESS sensitive to small movements...
-                I am doing this to illustrate how we can use the phone orientation as a trigger vs. a controller
-                Play with these values. The response range should be tuned to the interaction you are trying to author
-                 */
-                // the 'f' after the number value means the number is a Float - https://kotlinlang.org/docs/numbers.html#literal-constants-for-numbers
-
-                if(event.values[0] > 0.25f ){
-                    Log.d(TAG, "X is positive")
-                } else if( event.values[0] < -0.25f ){
-                    Log.d(TAG, "X is negative")
-                }
-                if (event.values[1] > 0.25f) {
-                    Log.d(TAG, "Y is positive")
-                } else if (event.values[1] < -0.25f) {
-                    Log.d(TAG, "Y is negative")
-                }
-                if (event.values[2] > 0.55f) {
-                    Log.d(TAG, "Z is positive")
-                    Log.d(TAG, "\n Z: ${event.values[2]}")
-                } else if (event.values[2] < -0.80f) {
-                    Log.d(TAG, "\n Z: ${event.values[2]}")
-                    Log.d(TAG, "Z is negative")
-                }
-            }
-
-        }
-
-        /* Applications have lifecycles. When we launch the app, it is in the Foreground, if we switch to another app, it moves to the background.
-        Activity Lifecycle - https://developer.android.com/guide/components/activities/activity-lifecycle
-        When the app is in the background it is paused. onPause, therefore we stop listening to the sensor.
-         */
-        override fun onPause() {
-            super.onPause()
-            sensorManager.unregisterListener(this)
-        }
-        /* When we bring the already running app back to the foreground
-         we are resuming the app. onResume(), executes the code that restarts the listener by calling the .registerListener method
-         */
-        override fun onResume() {
-            super.onResume()
-            gameOrientationVector?.also { gameOrientatVec ->
-                sensorManager.registerListener(this,gameOrientatVec, SensorManager.SENSOR_DELAY_NORMAL)
-            }
-
-        }
-    }
-
-    override fun onSensorChanged(p0: SensorEvent?) {
-        TODO("Not yet implemented")
     }
 }
 

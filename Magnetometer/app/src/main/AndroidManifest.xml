@@ -23,8 +23,5 @@
             </intent-filter>
         </activity>
     </application>
-    <!--    TODO We need to notify the app manifest that the application makes use of the gyroscope    -->
-    <uses-feature
-        android:name="android.hardware.sensor.gyroscope"
-        android:required="true"/>
+
 </manifest>
