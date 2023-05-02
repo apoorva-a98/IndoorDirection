@@ -80,18 +80,22 @@ class MainActivity : ComponentActivity(), SensorEventListener {
              */
             // the 'f' after the number value means the number is a Float - https://kotlinlang.org/docs/numbers.html#literal-constants-for-numbers
             // Log.d(TAG, (event.values[0] + event.values[1] + event.values[2]).toString())
-            val dx = event.values[0];
-            val dy = event.values[1];
-            val dz = event.values[2];
+            val dx = event.values[0]
+            val dy = event.values[1]
+            val dz = event.values[2]
 
             // Calculate total magnetic field strength (in microtesla)
 //            val magnetic_field : Double = sqrt((dx * dx + dy * dy + dz * dz).toDouble())
 
             // Calculate inclination angle (in radians)
-            val inclination_angle = atan(dy / sqrt((dx * dx + dz * dz).toDouble()))
+            val inclinationAngle = atan(dy / sqrt((dx * dx + dz * dz).toDouble()))
 
             // Calculate azimuth angle (in degrees)
-            val compassAngle = ((360 + atan(dx / (dy * sin(inclination_angle) + dz * cos(inclination_angle)))) % 360 - magneticDeclination)
+            compassAngle = (((360 + kotlin.math.atan(
+                dx / (dy * kotlin.math.sin(inclinationAngle) + dz * kotlin.math.cos(
+                    inclinationAngle
+                ))
+            )) % 360 - magneticDeclination).toFloat())
             Log.d(TAG, compassAngle.toString())
         }
     }
@@ -110,8 +114,8 @@ class MainActivity : ComponentActivity(), SensorEventListener {
      */
     override fun onResume() {
         super.onResume()
-        directionVector?.also { direcVec ->
-            sensorManager.registerListener(this, direcVec, SensorManager.SENSOR_DELAY_NORMAL)
+        directionVector.also { directionVector ->
+            sensorManager.registerListener(this, directionVector, SensorManager.SENSOR_DELAY_NORMAL)
         }
     }
 
