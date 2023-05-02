@@ -17,10 +17,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.magnetometer.ui.theme.MagnetometerTheme
-import java.lang.Math.atan
-import java.lang.Math.cos
-import java.lang.Math.sin
-import java.lang.Math.sqrt
+//import java.lang.Math.atan
+//import java.lang.Math.cos
+//import java.lang.Math.sin
+//import java.lang.Math.sqrt
 
 private const val TAG = "MAIN"
 private lateinit var  sensorManager: SensorManager
@@ -88,7 +88,7 @@ class MainActivity : ComponentActivity(), SensorEventListener {
 //            val magnetic_field : Double = sqrt((dx * dx + dy * dy + dz * dz).toDouble())
 
             // Calculate inclination angle (in radians)
-            val inclinationAngle = atan(dy / sqrt((dx * dx + dz * dz).toDouble()))
+            val inclinationAngle = kotlin.math.atan(dy / kotlin.math.sqrt((dx * dx + dz * dz).toDouble()))
 
             // Calculate azimuth angle (in degrees)
             compassAngle = (((360 + kotlin.math.atan(
