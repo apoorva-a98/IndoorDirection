@@ -9,16 +9,13 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.magnetometer.ui.theme.MagnetometerTheme
 import java.lang.Math.atan
 import java.lang.Math.cos
@@ -57,16 +54,13 @@ class MainActivity : ComponentActivity(), SensorEventListener {
         /*This delay indicates the frequency with which the sensor readings are updated and provided to the app. In particular, SENSOR_DELAY_NORMAL specifies a delay of around 200,000 microseconds or 200 milliseconds, which means that the sensor readings will be delivered at a rate of approximately 5 times per second.*/
 
         setContent {
-            val modifier: Modifier = Modifier
-            // TODO the theme for the app is located @ ui.theme > Theme.kt and is generated automatically
             MagnetometerTheme {
                 // A surface container using the 'background' color from the theme
-                // TODO Hover over the methods after 'Modifier' to see what they configure in the view
                 Surface(
-                    modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colors.background
                 ) {
-                    MainApplicationScreen(modifier,sensorArrayState)
+                    Greeting("Android")
                 }
             }
         }
@@ -80,9 +74,8 @@ class MainActivity : ComponentActivity(), SensorEventListener {
     */
     override fun onSensorChanged(event: SensorEvent?) {
         if (event != null) {
-            /* TODO These if statements will make the device LESS sensitive to small movements...*/
-            sensorArrayState.value = event.values
-            /*I am doing this to illustrate how we can use the phone orientation as a trigger vs. a controller
+            /* TODO These if statements will make the device LESS sensitive to small movements...
+            I am doing this to illustrate how we can use the phone orientation as a trigger vs. a controller
             Play with these values. The response range should be tuned to the interaction you are trying to author
              */
             // the 'f' after the number value means the number is a Float - https://kotlinlang.org/docs/numbers.html#literal-constants-for-numbers
@@ -117,49 +110,22 @@ class MainActivity : ComponentActivity(), SensorEventListener {
      */
     override fun onResume() {
         super.onResume()
-        directionVector.also { directionVector ->
-            sensorManager.registerListener(this, directionVector, SensorManager.SENSOR_DELAY_NORMAL)
+        directionVector?.also { direcVec ->
+            sensorManager.registerListener(this, direcVec, SensorManager.SENSOR_DELAY_NORMAL)
         }
     }
 
 }
 
 @Composable
-fun SensorValueDisplay(modifier: Modifier,
-                       sensorValues : MutableState<FloatArray>){
-    Column (
-        modifier.padding(8.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp)
-    ){
-        Text(text = "X: ${sensorValues.value[0]}")
-        Text(text = "Y: ${sensorValues.value[1]}")
-        Text(text = "Z: ${sensorValues.value[2]}")
-    }
-}
-@Composable
-fun MainApplicationScreen(
-    modifier: Modifier,
-    sensorValues: MutableState<FloatArray>
-){
-//    val sensorValueOutput by remember { mutableStateOf(0) }
-    Column(
-        modifier = Modifier.padding(32.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ){
-        Text(
-            fontSize = 24.sp,
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            text = "Hello Firebase Sensors")
-        Spacer(Modifier.height(16.dp))
-        SensorValueDisplay(modifier,
-            sensorValues)
-    }
+fun Greeting(name: String) {
+    Text(text = "Hello $name!")
 }
 
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     MagnetometerTheme {
-        MainApplicationScreen()
+        Greeting("Android")
     }
 }
