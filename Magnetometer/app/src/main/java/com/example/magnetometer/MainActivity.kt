@@ -16,7 +16,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.magnetometer.ui.theme.MagnetometerTheme
 
+private const val TAG = "MAIN"
 private lateinit var  sensorManager: SensorManager
+//define a variable that you will initialize later in the class
+// lateinit https://kotlinlang.org/docs/properties.html#late-initialized-properties-and-variables
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

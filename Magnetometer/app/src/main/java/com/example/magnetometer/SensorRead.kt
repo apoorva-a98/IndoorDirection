@@ -6,7 +6,7 @@ import android.hardware.SensorManager
 import android.util.Log
 
 // To isolate the log output so that only statements in this class are shown type "tag=:SensorRead" in the filter
-private const val TAG = "MAIN"
+private const val TAG = "SensorRead"
 
 /*Function for Identifying Sensors
 https://developer.android.com/guide/topics/sensors/sensors_overview#sensors-identify
