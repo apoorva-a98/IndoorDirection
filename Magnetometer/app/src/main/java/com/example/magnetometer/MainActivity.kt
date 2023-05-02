@@ -5,7 +5,10 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.os.Build
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -96,7 +99,25 @@ class MainActivity : ComponentActivity(), SensorEventListener {
                     inclinationAngle
                 ))
             )) % 360 - magneticDeclination).toFloat())
-            Log.d(TAG, compassAngle.toString())
+            Log.d(TAG, kotlin.math.round(compassAngle).toString())
+
+            if (kotlin.math.round(compassAngle).toInt() == 13) {
+                val vibrator = getSystemService(Vibrator::class.java)
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    vibrator.vibrate(
+                        VibrationEffect.createOneShot(
+                            500,
+                            VibrationEffect.DEFAULT_AMPLITUDE
+                        )
+                    )
+//                }
+//                else {
+//                    vibrator.vibrate(500)
+//                }
+            }
+
+
+
         }
     }
 
