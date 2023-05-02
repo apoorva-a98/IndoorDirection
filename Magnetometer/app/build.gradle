@@ -58,7 +58,6 @@ dependencies {
     // TODO $compose_version is a variable that is set in the 'top level' build.gradle file
     implementation "androidx.compose.ui:ui:1.5.0-alpha03"
     implementation "androidx.compose.ui:ui-tooling-preview:1.5.0-alpha03"
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1'
     implementation 'androidx.compose.material3:material3:1.1.0-rc01'
     implementation 'com.google.android.material:material:1.8.0'
     implementation 'androidx.compose.material:material:1.4.2'

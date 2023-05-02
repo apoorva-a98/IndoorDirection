@@ -15,25 +15,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.magnetometer.ui.theme.MagnetometerTheme
 
-private const val TAG = "SCREEN"
-
-class MainApplicationViewModel() : ViewModel() {
-    //Create mutableState of type FLoatArray for holding SensorData
-    val sensorValue = mutableStateOf((floatArrayOf(1f, 1f, 1f)))
-    val scope = CoroutineScope(Job() + Dispatchers.Default)
-    fun updateSensorValue(sensorFloatArray: FloatArray) {
-        scope.launch {
-            sensorValue.value = sensorFloatArray
-        }
-
-    }
-}
-
 @Composable
 fun MainApplicationScreen(
     modifier: Modifier,
-    mainApplicationViewModel: MainApplicationViewModel = viewModel(),
-    time : Int
+    sensorValues: MutableState<FloatArray>
 ){
 //    val sensorValueOutput by remember { mutableStateOf(0) }
     Column(
@@ -46,26 +31,7 @@ fun MainApplicationScreen(
             text = "Hello Firebase Sensors")
         Spacer(Modifier.height(16.dp))
         SensorValueDisplay(modifier,
-            mainApplicationViewModel,
-            time)
-    }
-}
-
-@Composable
-fun SensorValueDisplay(modifier: Modifier,
-                       mainApplicationViewModel: MainApplicationViewModel,
-                       time: Int
-){
-
-    val sensorValues  by mainApplicationViewModel.sensorValue
-    Column (
-        modifier.padding(8.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp)
-    ){
-        Text(text = "X: ${sensorValues?.get(0)}")
-        Text(text = "Y: ${sensorValues?.get(1)}")
-        Text(text = "Z: ${sensorValues?.get(2)}")
-        Text(text = "Tick: $time")
+            sensorValues)
     }
 }
 

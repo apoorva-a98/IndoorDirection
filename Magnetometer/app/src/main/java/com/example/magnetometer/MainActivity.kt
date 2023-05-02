@@ -38,14 +38,6 @@ private var compassAngle: Float = 0f
 private var magneticDeclination: Float = 0f
 
 class MainActivity : ComponentActivity(), SensorEventListener {
-    private val mainApplicationViewModel : MainApplicationViewModel by viewModels()
-    // Adding a Timer function here to force recomposition. A bit of a cheat but ¯\_(ツ)_/¯
-    // got it from -> https://medium.com/mobile-app-development-publication/android-jetpack-compose-recomposition-made-easy-527ecc9bcbaf
-    private var time by mutableStateOf(0)
-    private val routine = timer(period = 16) {time++}
-
-    //^DON'T UNDERSTAND
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
@@ -74,9 +66,7 @@ class MainActivity : ComponentActivity(), SensorEventListener {
                     modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MainApplicationScreen(modifier,
-                        mainApplicationViewModel = mainApplicationViewModel,
-                        time)
+                    MainApplicationScreen(modifier,sensorArrayState)
                 }
             }
         }
@@ -91,7 +81,7 @@ class MainActivity : ComponentActivity(), SensorEventListener {
     override fun onSensorChanged(event: SensorEvent?) {
         if (event != null) {
             /* TODO These if statements will make the device LESS sensitive to small movements...*/
-            mainApplicationViewModel.updateSensorValue(event.values)
+            sensorArrayState.value = event.values
             /*I am doing this to illustrate how we can use the phone orientation as a trigger vs. a controller
             Play with these values. The response range should be tuned to the interaction you are trying to author
              */
