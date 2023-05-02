@@ -87,9 +87,9 @@ class MainActivity : ComponentActivity(), SensorEventListener {
              */
             // the 'f' after the number value means the number is a Float - https://kotlinlang.org/docs/numbers.html#literal-constants-for-numbers
             // Log.d(TAG, (event.values[0] + event.values[1] + event.values[2]).toString())
-            val dx = event.values[0]
-            val dy = event.values[1]
-            val dz = event.values[2]
+            val dx = event.values[0];
+            val dy = event.values[1];
+            val dz = event.values[2];
 
             // Calculate total magnetic field strength (in microtesla)
 //            val magnetic_field : Double = sqrt((dx * dx + dy * dy + dz * dz).toDouble())
@@ -98,7 +98,7 @@ class MainActivity : ComponentActivity(), SensorEventListener {
             val inclination_angle = atan(dy / sqrt((dx * dx + dz * dz).toDouble()))
 
             // Calculate azimuth angle (in degrees)
-            compassAngle = (((360 + atan(dx / (dy * sin(inclination_angle) + dz * cos(inclination_angle)))) % 360 - magneticDeclination).toFloat())
+            val compassAngle = ((360 + atan(dx / (dy * sin(inclination_angle) + dz * cos(inclination_angle)))) % 360 - magneticDeclination)
             Log.d(TAG, compassAngle.toString())
         }
     }
@@ -134,5 +134,32 @@ fun SensorValueDisplay(modifier: Modifier,
         Text(text = "X: ${sensorValues.value[0]}")
         Text(text = "Y: ${sensorValues.value[1]}")
         Text(text = "Z: ${sensorValues.value[2]}")
+    }
+}
+@Composable
+fun MainApplicationScreen(
+    modifier: Modifier,
+    sensorValues: MutableState<FloatArray>
+){
+//    val sensorValueOutput by remember { mutableStateOf(0) }
+    Column(
+        modifier = Modifier.padding(32.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ){
+        Text(
+            fontSize = 24.sp,
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            text = "Hello Firebase Sensors")
+        Spacer(Modifier.height(16.dp))
+        SensorValueDisplay(modifier,
+            sensorValues)
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DefaultPreview() {
+    MagnetometerTheme {
+        MainApplicationScreen()
     }
 }
