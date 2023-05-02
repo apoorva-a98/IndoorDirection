@@ -43,7 +43,8 @@ class MainActivity : ComponentActivity(), SensorEventListener {
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         listSensors(sensorManager = sensorManager)
 
-        directionVector = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
+//        directionVector = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
+        directionVector = sensorManager.getDefaultSensor(Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR)
         /*In Android, the TYPE_MAGNETIC_FIELD sensor is typically used to measure the Earth's magnetic field, which can be used to determine the device's orientation and direction.
         The TYPE_ORIENTATION sensor was deprecated in API level 3 and is not recommended for use. The TYPE_GEOMAGNETIC_ROTATION_VECTOR and TYPE_MAGNETIC_FIELD_UNCALIBRATED sensors are alternative options that provide more advanced features, such as higher accuracy or uncalibrated readings, but are not necessary for basic compass functionality.
         Therefore, the recommended sensor to use for a compass application in Android is the TYPE_MAGNETIC_FIELD sensor.*/
@@ -87,6 +88,10 @@ class MainActivity : ComponentActivity(), SensorEventListener {
             val dy = event.values[1]
             val dz = event.values[2]
 
+            var toDegrees : Double = Math.toDegrees(dz.toDouble())
+            Log.d(TAG, "x: ${dx} y: ${dy} z: ${toDegrees}")
+
+
             // Calculate total magnetic field strength (in microtesla)
 //            val magnetic_field : Double = sqrt((dx * dx + dy * dy + dz * dz).toDouble())
 
@@ -99,7 +104,7 @@ class MainActivity : ComponentActivity(), SensorEventListener {
                     inclinationAngle
                 ))
             )) % 360 - magneticDeclination).toFloat())
-            Log.d(TAG, kotlin.math.round(compassAngle).toString())
+//            Log.d(TAG, kotlin.math.round(compassAngle).toString())
 
             if (kotlin.math.round(compassAngle).toInt() == 13) {
                 val vibrator = getSystemService(Vibrator::class.java)
