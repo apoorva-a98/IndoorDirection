@@ -20,6 +20,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.magnetometer.ui.theme.MagnetometerTheme
+import kotlin.math.roundToInt
+
 //import java.lang.Math.atan
 //import java.lang.Math.cos
 //import java.lang.Math.sin
@@ -84,29 +86,34 @@ class MainActivity : ComponentActivity(), SensorEventListener {
              */
             // the 'f' after the number value means the number is a Float - https://kotlinlang.org/docs/numbers.html#literal-constants-for-numbers
             // Log.d(TAG, (event.values[0] + event.values[1] + event.values[2]).toString())
-            val dx = event.values[0]
-            val dy = event.values[1]
+//            val dx = event.values[0]
+//            val dy = event.values[1]
             val dz = event.values[2]
 
-            var toDegrees : Double = Math.toDegrees(dz.toDouble())
-            Log.d(TAG, "x: ${dx} y: ${dy} z: ${toDegrees}")
+//            var xtoDegrees : Double = Math.toDegrees(dx.toDouble())
+//            var ytoDegrees : Double = Math.toDegrees(dy.toDouble())
+            var ztoDegrees : Double = Math.toDegrees(dz.toDouble())
+            ztoDegrees = (ztoDegrees).roundToInt().toDouble()
+//            Log.d(TAG, "x: ${dx} y: ${dy} z: ${ztoDegrees}")
+            Log.d(TAG, "z: ${ztoDegrees}")
 
 
             // Calculate total magnetic field strength (in microtesla)
 //            val magnetic_field : Double = sqrt((dx * dx + dy * dy + dz * dz).toDouble())
 
             // Calculate inclination angle (in radians)
-            val inclinationAngle = kotlin.math.atan(dy / kotlin.math.sqrt((dx * dx + dz * dz).toDouble()))
-
-            // Calculate azimuth angle (in degrees)
-            compassAngle = (((360 + kotlin.math.atan(
-                dx / (dy * kotlin.math.sin(inclinationAngle) + dz * kotlin.math.cos(
-                    inclinationAngle
-                ))
-            )) % 360 - magneticDeclination).toFloat())
+//            val inclinationAngle = kotlin.math.atan(dy / kotlin.math.sqrt((dx * dx + dz * dz).toDouble()))
+//
+//            // Calculate azimuth angle (in degrees)
+//            compassAngle = (((360 + kotlin.math.atan(
+//                dx / (dy * kotlin.math.sin(inclinationAngle) + dz * kotlin.math.cos(
+//                    inclinationAngle
+//                ))
+//            )) % 360 - magneticDeclination).toFloat())
 //            Log.d(TAG, kotlin.math.round(compassAngle).toString())
 
-            if (kotlin.math.round(compassAngle).toInt() == 13) {
+//            if (kotlin.math.round(compassAngle).toInt() == 13.0) {
+            if (ztoDegrees in 13.0..37.0) {
                 val vibrator = getSystemService(Vibrator::class.java)
 //                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     vibrator.vibrate(
