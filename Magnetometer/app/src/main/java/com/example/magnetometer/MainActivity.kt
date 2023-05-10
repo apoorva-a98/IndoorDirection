@@ -127,9 +127,6 @@ class MainActivity : ComponentActivity(), SensorEventListener {
 //                    vibrator.vibrate(500)
 //                }
             }
-
-
-
         }
     }
 
