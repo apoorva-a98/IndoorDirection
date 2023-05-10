@@ -1,10 +1,15 @@
 package com.example.magnetometer
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.pm.PackageManager
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.net.ConnectivityManager
+import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
@@ -12,6 +17,7 @@ import android.os.Vibrator
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -19,13 +25,19 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.app.ActivityCompat
 import com.example.magnetometer.ui.theme.MagnetometerTheme
 import kotlin.math.roundToInt
+
 
 //import java.lang.Math.atan
 //import java.lang.Math.cos
 //import java.lang.Math.sin
 //import java.lang.Math.sqrt
+
+val TAG1 : String = "WIFI"
+//@SuppressLint("StaticFieldLeak")
+lateinit var ctx: Context
 
 private const val TAG = "MAIN"
 private lateinit var  sensorManager: SensorManager
@@ -41,6 +53,41 @@ private var magneticDeclination: Float = 0f
 
 class MainActivity : ComponentActivity(), SensorEventListener {
     override fun onCreate(savedInstanceState: Bundle?) {
+        //Beginning Permissions Check
+        ctx  = applicationContext
+
+        // [start] Permissions Check
+        permissionsResultLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
+                if (result[android.Manifest.permission.ACCESS_FINE_LOCATION] != null) {
+                    isLocFinePermissionGranted =
+                        true == result[Manifest.permission.ACCESS_FINE_LOCATION]
+                }
+                if (result[android.Manifest.permission.ACCESS_NETWORK_STATE] != null) {
+                    isNetworkPermissionGranted =
+                        true == result[Manifest.permission.ACCESS_NETWORK_STATE]
+                }
+                if (result[android.Manifest.permission.ACCESS_WIFI_STATE] != null) {
+                    isWifiPermissionGranted =
+                        true == result[Manifest.permission.ACCESS_WIFI_STATE]
+                }
+            }
+
+        if (ActivityCompat.checkSelfPermission(
+                ctx,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            // If all permissions are granted, Proceed
+            getWifiInfo(ctx)
+        }
+        else{
+            requestPermission(applicationContext)
+        }
+// [end] Permissions Check
+
+
+
         super.onCreate(savedInstanceState)
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         listSensors(sensorManager = sensorManager)
@@ -69,7 +116,33 @@ class MainActivity : ComponentActivity(), SensorEventListener {
                     Greeting("Android")
                 }
             }
+            getWifiInfo(this)
         }
+    }
+
+    private fun getWifiInfo(context: Context) {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val wifiManager =
+            context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+        if (ActivityCompat.checkSelfPermission(
+                ctx,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            // If all permissions are granted, Proceed
+//        wifiManager.scanResults
+//            Log.d(TAG, "getWifiInfo: ${wifiManager.scanResults}")
+            val wifiInfo = wifiManager.connectionInfo
+            val bssid = wifiInfo.bssid
+            Log.d(TAG, "getWifiInfo: BSSID=$bssid")
+        }
+        else{
+            requestPermission(ctx)
+        }
+
+        //WifiInfo is depricated and doesnt work
+        //connectionInfo requires Wifi info and hence doesnt work
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
@@ -95,7 +168,7 @@ class MainActivity : ComponentActivity(), SensorEventListener {
             var ztoDegrees : Double = Math.toDegrees(dz.toDouble())
             ztoDegrees = (ztoDegrees).roundToInt().toDouble()
 //            Log.d(TAG, "x: ${dx} y: ${dy} z: ${ztoDegrees}")
-            Log.d(TAG, "z: ${ztoDegrees}")
+//            Log.d(TAG, "z: ${ztoDegrees}")
 
 
             // Calculate total magnetic field strength (in microtesla)
