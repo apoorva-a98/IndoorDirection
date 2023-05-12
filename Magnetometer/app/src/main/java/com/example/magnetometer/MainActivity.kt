@@ -29,14 +29,8 @@ import androidx.core.app.ActivityCompat
 import com.example.magnetometer.ui.theme.MagnetometerTheme
 import kotlin.math.roundToInt
 
-
-//import java.lang.Math.atan
-//import java.lang.Math.cos
-//import java.lang.Math.sin
-//import java.lang.Math.sqrt
-
 val TAG1 : String = "WIFI"
-//@SuppressLint("StaticFieldLeak")
+@SuppressLint("StaticFieldLeak")
 lateinit var ctx: Context
 
 private const val TAG = "MAIN"
@@ -48,13 +42,11 @@ private lateinit var directionVector: Sensor
 Inheritance - https://kotlinlang.org/docs/inheritance.html
 Interface -  https://kotlinlang.org/docs/interfaces.html
  */
-private var compassAngle: Float = 0f
-private var magneticDeclination: Float = 0f
 
 class MainActivity : ComponentActivity(), SensorEventListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         //Beginning Permissions Check
-        ctx  = applicationContext
+        ctx = applicationContext
 
         // [start] Permissions Check
         permissionsResultLauncher =
@@ -80,27 +72,18 @@ class MainActivity : ComponentActivity(), SensorEventListener {
         ) {
             // If all permissions are granted, Proceed
             getWifiInfo(ctx)
-        }
-        else{
+        } else {
             requestPermission(applicationContext)
         }
 // [end] Permissions Check
-
 
 
         super.onCreate(savedInstanceState)
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         listSensors(sensorManager = sensorManager)
 
-//        directionVector = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
         directionVector = sensorManager.getDefaultSensor(Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR)
-        /*In Android, the TYPE_MAGNETIC_FIELD sensor is typically used to measure the Earth's magnetic field, which can be used to determine the device's orientation and direction.
-        The TYPE_ORIENTATION sensor was deprecated in API level 3 and is not recommended for use. The TYPE_GEOMAGNETIC_ROTATION_VECTOR and TYPE_MAGNETIC_FIELD_UNCALIBRATED sensors are alternative options that provide more advanced features, such as higher accuracy or uncalibrated readings, but are not necessary for basic compass functionality.
-        Therefore, the recommended sensor to use for a compass application in Android is the TYPE_MAGNETIC_FIELD sensor.*/
 
-        // Obtain magnetic declination for current location (in degrees)
-        // This value can be obtained from a magnetic declination map or a third-party API
-        magneticDeclination = -12.37f // In Brooklyn Heights NYC https://www.magnetic-declination.com/#
 
         //TODO This registration activates an Observer that is listening for state changes in the sensor data
         sensorManager.registerListener(this, directionVector, SensorManager.SENSOR_DELAY_NORMAL)
@@ -136,8 +119,7 @@ class MainActivity : ComponentActivity(), SensorEventListener {
             val wifiInfo = wifiManager.connectionInfo
             val bssid = wifiInfo.bssid
             Log.d(TAG, "getWifiInfo: BSSID=$bssid")
-        }
-        else{
+        } else {
             requestPermission(ctx)
         }
 
@@ -148,57 +130,24 @@ class MainActivity : ComponentActivity(), SensorEventListener {
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
         Log.d(TAG, "onAccuracyChanged: DO Something")
     }
+
     /* This observer function is listening for changes in value, once you register the listener above, it will
     continually update
     */
     override fun onSensorChanged(event: SensorEvent?) {
         if (event != null) {
-            /* TODO These if statements will make the device LESS sensitive to small movements...
-            I am doing this to illustrate how we can use the phone orientation as a trigger vs. a controller
-            Play with these values. The response range should be tuned to the interaction you are trying to author
-             */
-            // the 'f' after the number value means the number is a Float - https://kotlinlang.org/docs/numbers.html#literal-constants-for-numbers
-            // Log.d(TAG, (event.values[0] + event.values[1] + event.values[2]).toString())
-//            val dx = event.values[0]
-//            val dy = event.values[1]
             val dz = event.values[2]
-
-//            var xtoDegrees : Double = Math.toDegrees(dx.toDouble())
-//            var ytoDegrees : Double = Math.toDegrees(dy.toDouble())
-            var ztoDegrees : Double = Math.toDegrees(dz.toDouble())
+            var ztoDegrees: Double = Math.toDegrees(dz.toDouble())
             ztoDegrees = (ztoDegrees).roundToInt().toDouble()
-//            Log.d(TAG, "x: ${dx} y: ${dy} z: ${ztoDegrees}")
-//            Log.d(TAG, "z: ${ztoDegrees}")
 
-
-            // Calculate total magnetic field strength (in microtesla)
-//            val magnetic_field : Double = sqrt((dx * dx + dy * dy + dz * dz).toDouble())
-
-            // Calculate inclination angle (in radians)
-//            val inclinationAngle = kotlin.math.atan(dy / kotlin.math.sqrt((dx * dx + dz * dz).toDouble()))
-//
-//            // Calculate azimuth angle (in degrees)
-//            compassAngle = (((360 + kotlin.math.atan(
-//                dx / (dy * kotlin.math.sin(inclinationAngle) + dz * kotlin.math.cos(
-//                    inclinationAngle
-//                ))
-//            )) % 360 - magneticDeclination).toFloat())
-//            Log.d(TAG, kotlin.math.round(compassAngle).toString())
-
-//            if (kotlin.math.round(compassAngle).toInt() == 13.0) {
             if (ztoDegrees in 13.0..37.0) {
                 val vibrator = getSystemService(Vibrator::class.java)
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    vibrator.vibrate(
-                        VibrationEffect.createOneShot(
-                            500,
-                            VibrationEffect.DEFAULT_AMPLITUDE
-                        )
+                vibrator.vibrate(
+                    VibrationEffect.createOneShot(
+                        500,
+                        VibrationEffect.DEFAULT_AMPLITUDE
                     )
-//                }
-//                else {
-//                    vibrator.vibrate(500)
-//                }
+                )
             }
         }
     }
@@ -221,6 +170,30 @@ class MainActivity : ComponentActivity(), SensorEventListener {
             sensorManager.registerListener(this, directionVector, SensorManager.SENSOR_DELAY_NORMAL)
         }
     }
+
+    
+    //TODO Add a button
+    //TODO onclick speak what area the user is in
+    //TODO say now turn to find the direction of..>> just say
+    //TODO when pointing in the direction give a haptic response(buz only if the threshold is more than 20/30) to make the user stop and say what is in the direction.
+    //TODO click to stop
+
+    //last angle something
+    //if the router connected gto is ###
+    //if (the magnometer range is between .. and .. ){
+    //if ( last angle was something else){
+    //vibrate()
+    //speak()
+    //}
+    //else{
+    //do nothing
+    //}
+    //}
+    //if (the magnometer range is between .. and ...&& last change  = 0){
+    //vibrate()
+    //speak()
+    //}
+
 
 }
 
