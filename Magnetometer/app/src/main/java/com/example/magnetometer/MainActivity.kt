@@ -55,6 +55,7 @@ var wifiInfo : String = ""
 var bssid : String = ""
 var state : Number = 0
 var last_state : Number = 10
+var area : String = ""
 
 
 class MainActivity : ComponentActivity(), SensorEventListener, TextToSpeech.OnInitListener {
@@ -143,7 +144,13 @@ class MainActivity : ComponentActivity(), SensorEventListener, TextToSpeech.OnIn
             wifiInfo = (wifiManager.connectionInfo).toString()
 //            Log.d(TAG, wifiInfo)
             bssid = wifiInfo.substringAfter("BSSID: ").substringBefore(", ")
+
+            if (bssid == "78:67:0e:3a:25:3a"){
+                area = "IT3 House"
+            }
             Log.d(TAG, bssid)
+            Log.d(TAG, area)
+            speakIt(area)
 //            val bssid = wifiInfo.bssid
 //            Log.d(TAG, "getWifiInfo: BSSID=$bssid")
         } else {
@@ -319,7 +326,8 @@ fun ButtonScreen(onButtonClick: (Context) -> Unit) {
 
 @Composable
 fun Greeting(name: String) {
-    Text(text = bssid)
+//    Text(text = bssid)
+    Text(text = area)
 }
 
 @Preview(showBackground = true)
