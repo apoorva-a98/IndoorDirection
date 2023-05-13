@@ -14,19 +14,27 @@ import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.speech.tts.TextToSpeech
+import android.speech.tts.TextToSpeech.QUEUE_FLUSH
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import com.example.magnetometer.ui.theme.MagnetometerTheme
+import java.util.Locale
 import kotlin.math.roundToInt
 
 val TAG1 : String = "WIFI"
@@ -42,11 +50,21 @@ private lateinit var directionVector: Sensor
 Inheritance - https://kotlinlang.org/docs/inheritance.html
 Interface -  https://kotlinlang.org/docs/interfaces.html
  */
+var results : String = ""
+var wifiInfo : String = ""
+var bssid : String = ""
+var state : Number = 0
+var last_state : Number = 10
 
-class MainActivity : ComponentActivity(), SensorEventListener {
+
+class MainActivity : ComponentActivity(), SensorEventListener, TextToSpeech.OnInitListener {
+    private var tts: TextToSpeech? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         //Beginning Permissions Check
         ctx = applicationContext
+
+        // Initialize the TextToSpeech engine.
+        tts = TextToSpeech(this, this)
 
         // [start] Permissions Check
         permissionsResultLauncher =
@@ -89,6 +107,8 @@ class MainActivity : ComponentActivity(), SensorEventListener {
         sensorManager.registerListener(this, directionVector, SensorManager.SENSOR_DELAY_NORMAL)
         /*This delay indicates the frequency with which the sensor readings are updated and provided to the app. In particular, SENSOR_DELAY_NORMAL specifies a delay of around 200,000 microseconds or 200 milliseconds, which means that the sensor readings will be delivered at a rate of approximately 5 times per second.*/
 
+//        tts!!.speak("hello world hahahahaa i am tired of this not working", TextToSpeech.QUEUE_FLUSH, null, null)
+
         setContent {
             MagnetometerTheme {
                 // A surface container using the 'background' color from the theme
@@ -97,11 +117,14 @@ class MainActivity : ComponentActivity(), SensorEventListener {
                     color = MaterialTheme.colors.background
                 ) {
                     Greeting("Android")
+//                    ButtonScreen()
+                    ButtonScreen { getWifiInfo(it)}
                 }
             }
             getWifiInfo(this)
         }
     }
+
 
     private fun getWifiInfo(context: Context) {
         val connectivityManager =
@@ -116,9 +139,13 @@ class MainActivity : ComponentActivity(), SensorEventListener {
             // If all permissions are granted, Proceed
 //        wifiManager.scanResults
 //            Log.d(TAG, "getWifiInfo: ${wifiManager.scanResults}")
-            val wifiInfo = wifiManager.connectionInfo
-            val bssid = wifiInfo.bssid
-            Log.d(TAG, "getWifiInfo: BSSID=$bssid")
+            results = (wifiManager.scanResults).toString()
+            wifiInfo = (wifiManager.connectionInfo).toString()
+//            Log.d(TAG, wifiInfo)
+            bssid = wifiInfo.substringAfter("BSSID: ").substringBefore(", ")
+            Log.d(TAG, bssid)
+//            val bssid = wifiInfo.bssid
+//            Log.d(TAG, "getWifiInfo: BSSID=$bssid")
         } else {
             requestPermission(ctx)
         }
@@ -140,16 +167,87 @@ class MainActivity : ComponentActivity(), SensorEventListener {
             var ztoDegrees: Double = Math.toDegrees(dz.toDouble())
             ztoDegrees = (ztoDegrees).roundToInt().toDouble()
 
-            if (ztoDegrees in 13.0..37.0) {
-                val vibrator = getSystemService(Vibrator::class.java)
+            val vibrator = getSystemService(Vibrator::class.java)
+//            Log.d(TAG, "z: ${ztoDegrees}")
+
+//            if (ztoDegrees in 47.0..51.0){
+//                state = 1; //bathroom
+//            }
+//            else if (ztoDegrees in -27.0..-30.0){
+//                state = 2; //door
+//            }
+//            else if (ztoDegrees in -20.0..-24.0){
+//                state = 3; //apoorva's room
+//            }
+//            else if (ztoDegrees in -52.0..-56.0){
+//                state = 4; //neeti's room
+//            }
+
+            if (ztoDegrees >= -51.0 && ztoDegrees <= -47.0) {
+                state = 1 // bathroom
+            } else if (ztoDegrees >= -30.0 && ztoDegrees <= -27.0) {
+                state = 2 // door
+            } else if (ztoDegrees >= -24.0 && ztoDegrees <= -20.0) {
+                state = 3 // apoorva's room
+            } else if (ztoDegrees >= -56.0 && ztoDegrees <= -52.0) {
+                state = 4 // neeti's room
+            }
+            else{
+                state = 0
+            }
+
+            if (state == 1 && last_state != 1 ){
+                Log.d(TAG, "bathroom z: ${ztoDegrees}")
                 vibrator.vibrate(
                     VibrationEffect.createOneShot(
-                        500,
+                        50,
                         VibrationEffect.DEFAULT_AMPLITUDE
                     )
                 )
+                speakIt("bathroom")
+                last_state = 1
             }
+            else if (state == 2 && last_state != 2 ){
+                Log.d(TAG, "door z: ${ztoDegrees}")
+                vibrator.vibrate(
+                    VibrationEffect.createOneShot(
+                        50,
+                        VibrationEffect.DEFAULT_AMPLITUDE
+                    )
+                )
+                speakIt("door")
+                last_state = 2
+            }
+            else if (state == 3 && last_state != 3 ){
+                Log.d(TAG, "apoorva's room z: ${ztoDegrees}")
+                vibrator.vibrate(
+                    VibrationEffect.createOneShot(
+                        50,
+                        VibrationEffect.DEFAULT_AMPLITUDE
+                    )
+                )
+                speakIt("apoorva's room")
+                last_state = 3
+            }
+            else if (state == 4 && last_state != 4 ){
+                Log.d(TAG, "neeti's room z: ${ztoDegrees}")
+                vibrator.vibrate(
+                    VibrationEffect.createOneShot(
+                        50,
+                        VibrationEffect.DEFAULT_AMPLITUDE
+                    )
+                )
+                speakIt("neeti's room")
+                last_state = 4
+            }
+//            else{
+//                last_state = 0
+//            }
         }
+    }
+
+    fun speakIt(str: String){
+        tts?.speak(str,QUEUE_FLUSH, null, "")
     }
 
     /* Applications have lifecycles. When we launch the app, it is in the Foreground, if we switch to another app, it moves to the background.
@@ -171,7 +269,18 @@ class MainActivity : ComponentActivity(), SensorEventListener {
         }
     }
 
-    
+    override fun onInit(status: Int) {
+//        TODO("Not yet implemented")
+        // Check if the initialization was successful.
+        if (status == TextToSpeech.SUCCESS) {
+            // Set the language to US English.
+            tts?.language = Locale.US
+        } else {
+            // Log an error message.
+            Log.e("TTS", "Initialization failed.")
+        }
+    }
+
     //TODO Add a button
     //TODO onclick speak what area the user is in
     //TODO say now turn to find the direction of..>> just say
@@ -193,13 +302,24 @@ class MainActivity : ComponentActivity(), SensorEventListener {
     //vibrate()
     //speak()
     //}
+}
 
+@Composable
+fun ButtonScreen(onButtonClick: (Context) -> Unit) {
+    val context = LocalContext.current
 
+    Column(
+        modifier = Modifier.padding(top = 36.dp)
+    ) {
+        Button(onClick = { onButtonClick(context) }) {
+            Text("Get Wifi Info")
+        }
+    }
 }
 
 @Composable
 fun Greeting(name: String) {
-    Text(text = "Hello $name!")
+    Text(text = bssid)
 }
 
 @Preview(showBackground = true)
