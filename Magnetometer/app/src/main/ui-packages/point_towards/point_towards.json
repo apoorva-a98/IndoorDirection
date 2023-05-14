@@ -1,0 +1,162 @@
+{
+  "name": "point_towards",
+  "version": 32,
+  "source-key": {
+    "type": "figma",
+    "file": "VI3mJLOlEHpPfHnpPmYneV",
+    "node": "58:228",
+    "version": "3486334564",
+    "component-id": "ab36afcb474603a3cc27430b4b8b5f8a5333d815"
+  },
+  "default": "Point Towards",
+  "design": {
+    "atoms": [
+      {
+        "type": "group",
+        "id": "top_level",
+        "root": "true"
+      },
+      {
+        "type": "group",
+        "id": "container"
+      },
+      {
+        "type": "vector",
+        "id": "Polygon 1"
+      },
+      {
+        "type": "group",
+        "id": "state-layer"
+      },
+      {
+        "type": "text",
+        "id": "Landmark"
+      }
+    ],
+    "modes": {
+      "Point Towards": {
+        "rules": [
+          {
+            "id": "top_level",
+            "is-structured": "false",
+            "children": [
+              "container",
+              "Polygon 1"
+            ],
+            "clip-content": "false"
+          },
+          {
+            "id": "container",
+            "border-radius": "100.0",
+            "alignment": {
+              "horizontal": {
+                "attachment": "start",
+                "offset": "0.0"
+              },
+              "vertical": {
+                "attachment": "center",
+                "offset": "9.5"
+              }
+            },
+            "size-constraints": {
+              "width-constraints": {
+                "sizing-mode": "proportional",
+                "value": "1.0"
+              },
+              "height-constraints": {
+                "sizing-mode": "shrink"
+              }
+            },
+            "children": [
+              "state-layer"
+            ],
+            "item-spacing": "10.0",
+            "background-color": {
+              "alpha": "1.0",
+              "hue": "280.00000000000006",
+              "saturation": "0.03999999999999999",
+              "value": "0.8823529411764706"
+            },
+            "clip-content": "false"
+          },
+          {
+            "id": "Polygon 1",
+            "margin": {
+              "left": "108.9345703125",
+              "right": "108.93460083007812",
+              "bottom": "29.0"
+            },
+            "size-constraints": {
+              "width-constraints": {
+                "sizing-mode": "proportional",
+                "value": "1.0"
+              },
+              "height-constraints": {
+                "sizing-mode": "proportional",
+                "value": "1.0"
+              }
+            },
+            "vector-content": "polygon_1.svg"
+          },
+          {
+            "id": "state-layer",
+            "size-constraints": {
+              "width-constraints": {
+                "sizing-mode": "fixed",
+                "value": "72.0"
+              },
+              "height-constraints": {
+                "sizing-mode": "fixed",
+                "value": "36.0"
+              }
+            },
+            "arrangement": "row",
+            "children": [
+              "Landmark"
+            ],
+            "item-spacing": "56.0",
+            "clip-content": "false"
+          },
+          {
+            "id": "Landmark",
+            "font-weight": "500.0",
+            "color": {
+              "alpha": "1.0",
+              "hue": "0.0",
+              "saturation": "0.0",
+              "value": "0.0"
+            },
+            "text-content": "$Landmark",
+            "overflow": "visible",
+            "text-align-vertical": "center",
+            "text-size": "16.0",
+            "letter-spacing": "0.15000000596046448",
+            "line-height": "1.5"
+          }
+        ]
+      }
+    }
+  },
+  "parameters": {
+    "Landmark": {
+      "data-type": "text",
+      "required": false,
+      "description": ""
+    }
+  },
+  "previews": [
+    {
+      "design": "Point Towards",
+      "size": {
+        "width": 248.0,
+        "height": 55.0
+      },
+      "parameters": {
+        "Landmark": "Point"
+      }
+    }
+  ],
+  "adin-component-search-paths": [],
+  "image-search-paths": [],
+  "vector-search-paths": []
+}

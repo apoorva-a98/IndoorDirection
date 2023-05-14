@@ -1,11 +1,20 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'com.google.relay'
 }
 
 android {
     namespace 'com.example.magnetometer'
     compileSdk 33
+
+    sourceSets {
+        main{
+            assets{
+                srcDir('src/main/ui-packages')
+            }
+        }
+    }
 
     defaultConfig {
         applicationId "com.example.magnetometer"

@@ -20,19 +20,27 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
+import com.example.magnetometer.basicdialog.BasicDialog
+import com.example.magnetometer.pointtowards.PointTowards
 import com.example.magnetometer.ui.theme.MagnetometerTheme
 import java.util.Locale
 import kotlin.math.roundToInt
@@ -56,6 +64,7 @@ var bssid : String = ""
 var state : Number = 0
 var last_state : Number = 10
 var area : String = ""
+var decription : String = ""
 
 
 class MainActivity : ComponentActivity(), SensorEventListener, TextToSpeech.OnInitListener {
@@ -117,9 +126,24 @@ class MainActivity : ComponentActivity(), SensorEventListener, TextToSpeech.OnIn
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Greeting("Android")
-//                    ButtonScreen()
-                    ButtonScreen { getWifiInfo(it)}
+                    ButtonScreen { getWifiInfo(it) }
+                }
+                Box(modifier = Modifier.background(color = Color.White)) {
+                    Column {
+                        com.example.magnetometer.topappbar.TopAppBar(modifier = Modifier.padding(start = 10.dp))
+                        BasicDialog(
+                            area = "Classroom Corridor",
+                            whatSAround = "You are in the north side hallway among the classrooms. This area has vending machines.",
+                            modifier = Modifier.padding(start = 10.dp, bottom = 60.dp)
+                        )
+                        PointTowards(
+                            landmark = "Door", modifier = Modifier
+                                .height(58.dp)
+                                .width(300.dp)
+                                .padding(start = 80.dp)
+                        )
+    //                    ButtonScreen()
+                    }
                 }
             }
             getWifiInfo(this)
@@ -148,9 +172,15 @@ class MainActivity : ComponentActivity(), SensorEventListener, TextToSpeech.OnIn
             if (bssid == "78:67:0e:3a:25:3a"){
                 area = "IT3 House"
             }
-            Log.d(TAG, bssid)
-            Log.d(TAG, area)
+            if (bssid == "dc:8c:37:1e:94:e5"){
+                area = "Classrooms Corridor"
+                decription = "You are in the north side hallway among the classrooms. This area has vending machines."
+            }
+
+            Log.d(TAG, "bssid: ${bssid}")
+//            Log.d(TAG, area)
             speakIt(area)
+            speakIt(decription)
 //            val bssid = wifiInfo.bssid
 //            Log.d(TAG, "getWifiInfo: BSSID=$bssid")
         } else {
@@ -175,7 +205,7 @@ class MainActivity : ComponentActivity(), SensorEventListener, TextToSpeech.OnIn
             ztoDegrees = (ztoDegrees).roundToInt().toDouble()
 
             val vibrator = getSystemService(Vibrator::class.java)
-//            Log.d(TAG, "z: ${ztoDegrees}")
+            Log.d(TAG, "z: ${ztoDegrees}")
 
 //            if (ztoDegrees in 47.0..51.0){
 //                state = 1; //bathroom
@@ -190,61 +220,61 @@ class MainActivity : ComponentActivity(), SensorEventListener, TextToSpeech.OnIn
 //                state = 4; //neeti's room
 //            }
 
-            if (ztoDegrees >= -51.0 && ztoDegrees <= -47.0) {
-                state = 1 // bathroom
-            } else if (ztoDegrees >= -30.0 && ztoDegrees <= -27.0) {
-                state = 2 // door
-            } else if (ztoDegrees >= -24.0 && ztoDegrees <= -20.0) {
-                state = 3 // apoorva's room
-            } else if (ztoDegrees >= -56.0 && ztoDegrees <= -52.0) {
-                state = 4 // neeti's room
+            if (ztoDegrees >= 15.0 && ztoDegrees <= 25.0) {
+                state = 1 // Staircase to Ability Project
+            } else if (ztoDegrees >= 39.0 && ztoDegrees <= 45.0) {
+                state = 2 // Vending Machines
+            } else if (ztoDegrees <= -54.0 || ztoDegrees >= 54.0) {
+                state = 3 // bathrooms
+            } else if (ztoDegrees >= 47.0 && ztoDegrees <= 54.0) {
+                state = 4 // door
             }
             else{
                 state = 0
             }
 
             if (state == 1 && last_state != 1 ){
-                Log.d(TAG, "bathroom z: ${ztoDegrees}")
+                Log.d(TAG, "Staircase to Ability Project z: ${ztoDegrees}")
                 vibrator.vibrate(
                     VibrationEffect.createOneShot(
                         50,
                         VibrationEffect.DEFAULT_AMPLITUDE
                     )
                 )
-                speakIt("bathroom")
+                speakIt("Staircase to Ability Project")
                 last_state = 1
             }
             else if (state == 2 && last_state != 2 ){
-                Log.d(TAG, "door z: ${ztoDegrees}")
+                Log.d(TAG, "Vending Machines z: ${ztoDegrees}")
                 vibrator.vibrate(
                     VibrationEffect.createOneShot(
                         50,
                         VibrationEffect.DEFAULT_AMPLITUDE
                     )
                 )
-                speakIt("door")
+                speakIt("Vending Machines")
                 last_state = 2
             }
             else if (state == 3 && last_state != 3 ){
-                Log.d(TAG, "apoorva's room z: ${ztoDegrees}")
+                Log.d(TAG, "Bathrooms z: ${ztoDegrees}")
                 vibrator.vibrate(
                     VibrationEffect.createOneShot(
                         50,
                         VibrationEffect.DEFAULT_AMPLITUDE
                     )
                 )
-                speakIt("apoorva's room")
+                speakIt("Bathrooms")
                 last_state = 3
             }
             else if (state == 4 && last_state != 4 ){
-                Log.d(TAG, "neeti's room z: ${ztoDegrees}")
+                Log.d(TAG, "Door and Emergency Exit 2 z: ${ztoDegrees}")
                 vibrator.vibrate(
                     VibrationEffect.createOneShot(
                         50,
                         VibrationEffect.DEFAULT_AMPLITUDE
                     )
                 )
-                speakIt("neeti's room")
+                speakIt("Door and Emergency Exit 2")
                 last_state = 4
             }
 //            else{
@@ -311,17 +341,17 @@ class MainActivity : ComponentActivity(), SensorEventListener, TextToSpeech.OnIn
     //}
 }
 
-@Composable
+    @Composable
 fun ButtonScreen(onButtonClick: (Context) -> Unit) {
     val context = LocalContext.current
-
-    Column(
-        modifier = Modifier.padding(top = 36.dp)
-    ) {
+//
+//    Column(
+//        modifier = Modifier.padding(top = 36.dp)
+//    ) {
         Button(onClick = { onButtonClick(context) }) {
             Text("Get Wifi Info")
         }
-    }
+//    }
 }
 
 @Composable

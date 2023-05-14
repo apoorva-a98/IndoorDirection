@@ -1,0 +1,231 @@
+{
+  "name": "button",
+  "version": 32,
+  "source-key": {
+    "type": "figma",
+    "file": "VI3mJLOlEHpPfHnpPmYneV",
+    "node": "34:539",
+    "version": "3486334564",
+    "component-id": "cc4543b2d020eb20a1247dd074ac56ff5b74abfe"
+  },
+  "default": "Button",
+  "design": {
+    "atoms": [
+      {
+        "type": "group",
+        "id": "top_level",
+        "root": "true"
+      },
+      {
+        "type": "group",
+        "id": "Large FAB-dark"
+      },
+      {
+        "type": "text",
+        "id": "Navigate"
+      },
+      {
+        "type": "group",
+        "id": "state-layer"
+      },
+      {
+        "type": "group",
+        "id": "icon"
+      },
+      {
+        "type": "vector",
+        "id": "icon1"
+      }
+    ],
+    "modes": {
+      "Button": {
+        "rules": [
+          {
+            "id": "top_level",
+            "tap-handler": "$On Click",
+            "is-structured": "false",
+            "children": [
+              "Large FAB-dark",
+              "Navigate"
+            ],
+            "clip-content": "false"
+          },
+          {
+            "id": "Large FAB-dark",
+            "padding": "$padding",
+            "margin": {
+              "left": "22.82196044921875",
+              "right": "22.821975708007812"
+            },
+            "border-radius": "127.0",
+            "drop-shadow": {
+              "color": {
+                "alpha": "0.2980392156862745",
+                "hue": "0.0",
+                "saturation": "0.0",
+                "value": "0.0"
+              },
+              "blur": "3.0",
+              "offset-x": "0.0",
+              "offset-y": "2.0",
+              "spread": "0.0",
+              "blend-mode": "normal"
+            },
+            "arrangement": "row",
+            "children": [
+              "state-layer"
+            ],
+            "item-spacing": "45.0",
+            "background-color": "$background"
+          },
+          {
+            "id": "Navigate",
+            "alignment": {
+              "horizontal": {
+                "attachment": "center",
+                "offset": "0.0"
+              },
+              "vertical": {
+                "attachment": "center",
+                "offset": "0.5"
+              }
+            },
+            "size-constraints": {
+              "width-constraints": {
+                "sizing-mode": "fixed",
+                "value": "181.0"
+              },
+              "height-constraints": {
+                "sizing-mode": "shrink"
+              }
+            },
+            "font-weight": "700.0",
+            "color": {
+              "alpha": "1.0",
+              "hue": "0.0",
+              "saturation": "0.0",
+              "value": "1.0"
+            },
+            "text-content": "$Navigate",
+            "overflow": "visible",
+            "max-lines": "-1",
+            "text-align-vertical": "center",
+            "text-size": "24.0",
+            "line-height": "1.3333332824707032"
+          },
+          {
+            "id": "state-layer",
+            "presence": "false",
+            "padding": "30.0",
+            "size-constraints": {
+              "width-constraints": {
+                "sizing-mode": "shrink"
+              },
+              "height-constraints": {
+                "sizing-mode": "shrink"
+              }
+            },
+            "arrangement": "row",
+            "children": [
+              "icon"
+            ],
+            "item-spacing": "10.0",
+            "background-color": {
+              "alpha": "0.0784313725490196",
+              "hue": "262.94117647058823",
+              "saturation": "0.1333333333333333",
+              "value": "1.0"
+            },
+            "clip-content": "false"
+          },
+          {
+            "id": "icon",
+            "presence": "false",
+            "size-constraints": {
+              "width-constraints": {
+                "sizing-mode": "fixed",
+                "value": "36.0"
+              },
+              "height-constraints": {
+                "sizing-mode": "fixed",
+                "value": "36.0"
+              }
+            },
+            "is-structured": "false",
+            "children": [
+              "icon1"
+            ],
+            "clip-content": "false"
+          },
+          {
+            "id": "icon1",
+            "presence": "false",
+            "margin": {
+              "left": "4.5",
+              "top": "4.507499694824219",
+              "right": "4.496246337890625",
+              "bottom": "4.499998092651367"
+            },
+            "size-constraints": {
+              "width-constraints": {
+                "sizing-mode": "proportional",
+                "value": "1.0"
+              },
+              "height-constraints": {
+                "sizing-mode": "proportional",
+                "value": "1.0"
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "parameters": {
+    "On Click": {
+      "data-type": "void-callback",
+      "required": false,
+      "description": ""
+    },
+    "background": {
+      "data-type": "color",
+      "required": false,
+      "description": ""
+    },
+    "padding": {
+      "data-type": "edge-data",
+      "required": false,
+      "description": ""
+    },
+    "Navigate": {
+      "data-type": "text",
+      "required": false,
+      "description": ""
+    }
+  },
+  "previews": [
+    {
+      "design": "Button",
+      "size": {
+        "width": 241.0,
+        "height": 195.0
+      },
+      "parameters": {
+        "background": {
+          "alpha": "1.0",
+          "hue": "257.1428571428571",
+          "saturation": "0.6043165467625898",
+          "value": "0.5450980392156862"
+        },
+        "padding": {
+          "left": "45.0",
+          "right": "45.0"
+        },
+        "Navigate": "Navigate"
+      }
+    }
+  ],
+  "adin-component-search-paths": [],
+  "image-search-paths": [],
+  "vector-search-paths": []
+}
