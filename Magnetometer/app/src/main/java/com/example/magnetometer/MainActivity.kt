@@ -326,8 +326,8 @@ fun ButtonScreen(onButtonClick: (Context) -> Unit) {
 
 @Composable
 fun Greeting(name: String) {
-//    Text(text = bssid)
-    Text(text = area)
+    Text(text = bssid)
+//    Text(text = area)
 }
 
 @Preview(showBackground = true)
