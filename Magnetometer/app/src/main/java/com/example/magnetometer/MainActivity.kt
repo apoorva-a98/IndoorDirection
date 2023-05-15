@@ -10,7 +10,6 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.net.ConnectivityManager
 import android.net.wifi.WifiManager
-import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -31,13 +30,16 @@ import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
 import com.example.magnetometer.basicdialog.BasicDialog
 import com.example.magnetometer.pointtowards.PointTowards
@@ -64,7 +66,8 @@ var bssid : String = ""
 var state : Number = 0
 var last_state : Number = 10
 var area : String = ""
-var decription : String = ""
+var description : String = ""
+var landmark : String = ""
 
 
 class MainActivity : ComponentActivity(), SensorEventListener, TextToSpeech.OnInitListener {
@@ -132,16 +135,16 @@ class MainActivity : ComponentActivity(), SensorEventListener, TextToSpeech.OnIn
                     Column {
                         com.example.magnetometer.topappbar.TopAppBar(modifier = Modifier.padding(start = 10.dp))
                         BasicDialog(
-                            area = "Classroom Corridor",
+                            area = "Classrooms Corridor",
                             whatSAround = "You are in the north side hallway among the classrooms. This area has vending machines.",
                             modifier = Modifier.padding(start = 10.dp, bottom = 60.dp)
                         )
-                        PointTowards(
-                            landmark = "Door", modifier = Modifier
-                                .height(58.dp)
-                                .width(300.dp)
-                                .padding(start = 80.dp)
-                        )
+//                        PointTowards(
+//                            landmark = landmark, modifier = Modifier
+//                                .height(58.dp)
+//                                .width(350.dp)
+//                                .padding(start = 20.dp, bottom= 60.dp)
+//                        )
     //                    ButtonScreen()
                     }
                 }
@@ -172,15 +175,23 @@ class MainActivity : ComponentActivity(), SensorEventListener, TextToSpeech.OnIn
             if (bssid == "78:67:0e:3a:25:3a"){
                 area = "IT3 House"
             }
-            if (bssid == "dc:8c:37:1e:94:e5"){
+            if (bssid == "dc:8c:37:1e:94:e5" || bssid == "dc:8c:37:1e:94:ea" || bssid == "6c:8b:d3:f5:85:25" || bssid == "6c:8b:d3:e9:a0:aa"){
                 area = "Classrooms Corridor"
-                decription = "You are in the north side hallway among the classrooms. This area has vending machines."
+                description = "You are in the north side hallway among the classrooms. This area has vending machines."
             }
+            if (bssid == "6c:8b:d3:be:84:6a" || bssid == "bssid: dc:8c:37:23:e4:aa"){
+                area = "ITP Entrance"
+                description = "You are near the door to ITP floor. This area has bathrooms, reception desk and the emergency exit."
+            }
+//            bssid: dc:8c:37:23:e4:aa // hallway behind the shop
+//            bssid: 6c:8b:d3:be:84:6a // itp entrance
+//            bssid: 6c:8b:d3:f5:85:2a // design lab
+
 
             Log.d(TAG, "bssid: ${bssid}")
 //            Log.d(TAG, area)
             speakIt(area)
-            speakIt(decription)
+            speakIt(description)
 //            val bssid = wifiInfo.bssid
 //            Log.d(TAG, "getWifiInfo: BSSID=$bssid")
         } else {
@@ -207,30 +218,19 @@ class MainActivity : ComponentActivity(), SensorEventListener, TextToSpeech.OnIn
             val vibrator = getSystemService(Vibrator::class.java)
             Log.d(TAG, "z: ${ztoDegrees}")
 
-//            if (ztoDegrees in 47.0..51.0){
-//                state = 1; //bathroom
-//            }
-//            else if (ztoDegrees in -27.0..-30.0){
-//                state = 2; //door
-//            }
-//            else if (ztoDegrees in -20.0..-24.0){
-//                state = 3; //apoorva's room
-//            }
-//            else if (ztoDegrees in -52.0..-56.0){
-//                state = 4; //neeti's room
-//            }
 
             if (ztoDegrees >= 15.0 && ztoDegrees <= 25.0) {
                 state = 1 // Staircase to Ability Project
-            } else if (ztoDegrees >= 39.0 && ztoDegrees <= 45.0) {
+            } else if (ztoDegrees >= 50.0 && ztoDegrees <= 53.0) {
                 state = 2 // Vending Machines
-            } else if (ztoDegrees <= -54.0 || ztoDegrees >= 54.0) {
+            } else if (ztoDegrees <= -53.0 && ztoDegrees >= -55.0) {
                 state = 3 // bathrooms
-            } else if (ztoDegrees >= 47.0 && ztoDegrees <= 54.0) {
+            } else if (ztoDegrees >= 55.0 && ztoDegrees <= 57.0) {
                 state = 4 // door
             }
             else{
                 state = 0
+                landmark = "Point"
             }
 
             if (state == 1 && last_state != 1 ){
@@ -241,6 +241,7 @@ class MainActivity : ComponentActivity(), SensorEventListener, TextToSpeech.OnIn
                         VibrationEffect.DEFAULT_AMPLITUDE
                     )
                 )
+                landmark = "Staircase to Ability Project"
                 speakIt("Staircase to Ability Project")
                 last_state = 1
             }
@@ -252,6 +253,7 @@ class MainActivity : ComponentActivity(), SensorEventListener, TextToSpeech.OnIn
                         VibrationEffect.DEFAULT_AMPLITUDE
                     )
                 )
+                landmark = "Vending Machines"
                 speakIt("Vending Machines")
                 last_state = 2
             }
@@ -263,6 +265,7 @@ class MainActivity : ComponentActivity(), SensorEventListener, TextToSpeech.OnIn
                         VibrationEffect.DEFAULT_AMPLITUDE
                     )
                 )
+                landmark = "Bathrooms"
                 speakIt("Bathrooms")
                 last_state = 3
             }
@@ -274,12 +277,13 @@ class MainActivity : ComponentActivity(), SensorEventListener, TextToSpeech.OnIn
                         VibrationEffect.DEFAULT_AMPLITUDE
                     )
                 )
+                landmark = "Door and Emergency Exit 2"
                 speakIt("Door and Emergency Exit 2")
                 last_state = 4
             }
-//            else{
-//                last_state = 0
-//            }
+            else{
+                landmark = "Point"
+            }
         }
     }
 
@@ -344,15 +348,20 @@ class MainActivity : ComponentActivity(), SensorEventListener, TextToSpeech.OnIn
     @Composable
 fun ButtonScreen(onButtonClick: (Context) -> Unit) {
     val context = LocalContext.current
-//
-//    Column(
-//        modifier = Modifier.padding(top = 36.dp)
-//    ) {
-        Button(onClick = { onButtonClick(context) }) {
-            Text("Get Wifi Info")
-        }
-//    }
+
+        Button(
+            onClick = { onButtonClick(context) },
+            modifier = Modifier
+                .background(Color.White)
+                .padding(16.dp)
+        ) {
+            Text("Get Location",
+            style = TextStyle(
+                fontSize = 30.sp,
+                )
+            ) }
 }
+
 
 @Composable
 fun Greeting(name: String) {
